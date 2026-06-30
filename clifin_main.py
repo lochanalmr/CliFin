@@ -3,8 +3,12 @@ from datetime import datetime
 import csv
 
 
-def init_db():
-    conn = sql.connect('storage.db')
+STORAGE_DB = 'storage.db'
+ASSETS_DB = 'assets.db'
+
+
+def init_db(db_name=STORAGE_DB):
+    conn = sql.connect(db_name)
     c = conn.cursor()
     c.execute("""
     CREATE TABLE IF NOT EXISTS storage (
@@ -12,6 +16,22 @@ def init_db():
         amount REAL,
         category TEXT,
         type TEXT,
+        created_at TEXT
+    )
+    """)
+    conn.commit()
+    return conn
+
+
+def init_assets_db():
+    conn = sql.connect(ASSETS_DB)
+    c = conn.cursor()
+    c.execute("""
+    CREATE TABLE IF NOT EXISTS assets (
+        id INTEGER PRIMARY KEY,
+        name TEXT,
+        asset_type TEXT,
+        amount REAL,
         created_at TEXT
     )
     """)
@@ -29,16 +49,19 @@ def data_write(amount, category, transaction_type):
     normalized_type = transaction_type.lower()
     if normalized_type == 'income':
         signed_amount = abs(amount)
+        stored_category = category
     elif normalized_type == 'expense':
         signed_amount = -abs(amount)
+        stored_category = category
     else:
         signed_amount = amount
+        stored_category = category
 
     created_at = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
     c.execute(
         "INSERT INTO storage (amount, category, type, created_at) VALUES (?, ?, ?, ?)",
-        (signed_amount, category, normalized_type, created_at)
+        (signed_amount, stored_category, normalized_type, created_at)
     )
 
     conn.commit()
@@ -149,12 +172,12 @@ def export_to_csv(rows, year, month):
     """Export transaction data to CSV file"""
     month_name = datetime(year, month, 1).strftime("%B")
     filename = f"transactions_{year}_{month:02d}_{month_name}.csv"
-    
+
     try:
         with open(filename, 'w', newline='') as csvfile:
             fieldnames = ['ID', 'Date', 'Type', 'Category', 'Amount']
             writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
-            
+
             writer.writeheader()
             for record_id, amount, category, transaction_type, created_at in rows:
                 writer.writerow({
@@ -164,7 +187,7 @@ def export_to_csv(rows, year, month):
                     'Category': category,
                     'Amount': f"{amount:.2f}"
                 })
-        
+
         print(f"Data exported successfully to {filename}")
         return True
     except Exception as e:
@@ -173,7 +196,7 @@ def export_to_csv(rows, year, month):
 
 
 def data_read():
-    print("\nFinancial Records Reader")
+    print("\nFinancial Records")
 
     while True:
         year_input = input("Enter year: ").strip()
@@ -266,7 +289,7 @@ def data_read():
         print("-" * 72)
         for record_id, amount, category, transaction_type, created_at in rows:
             print(f"{record_id:<3} | {created_at:<19} | {transaction_type:<7} | {category:<12} | {amount:>10.2f}")
-        
+
         while True:
             export_choice = input("\nWould you like to export this data as CSV? (y/n): ").strip().lower()
             if export_choice in {'y', 'yes'}:
@@ -278,24 +301,131 @@ def data_read():
                 print("Invalid choice. Please enter y or n.")
 
 
+def add_asset_entry():
+    print("\nAdd Other Asset")
+    print("1. Fixed Deposit")
+    print("2. Investment")
+    print("3. Other Asset")
+
+    while True:
+        asset_choice = input("Enter asset type code (1, 2, or 3): ").strip()
+        if asset_choice == '1':
+            asset_type = 'Fixed Deposit'
+            break
+        if asset_choice == '2':
+            asset_type = 'Investment'
+            break
+        if asset_choice == '3':
+            asset_type = 'Other Asset'
+            break
+        print("Invalid choice. Please enter 1, 2, or 3.")
+
+    while True:
+        asset_name = input("Enter asset name/description: ").strip()
+        if asset_name:
+            break
+        print("Asset name cannot be empty.")
+
+    while True:
+        amount_input = input("Enter amount: ").strip()
+        try:
+            amount = float(amount_input)
+        except ValueError:
+            print("Invalid amount. Please enter a valid number.")
+            continue
+
+        if amount <= 0:
+            print("Amount must be greater than 0.")
+            continue
+
+        break
+
+    conn = init_assets_db()
+    c = conn.cursor()
+    created_at = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    c.execute(
+        "INSERT INTO assets (name, asset_type, amount, created_at) VALUES (?, ?, ?, ?)",
+        (asset_name, asset_type, amount, created_at)
+    )
+    conn.commit()
+    conn.close()
+    print("Asset added successfully.")
+
+
+def view_current_financial_status():
+    print("\nCurrent Financial Status")
+
+    conn = init_db()
+    c = conn.cursor()
+    c.execute("SELECT amount, type FROM storage")
+    rows = c.fetchall()
+    conn.close()
+
+    total_income = 0.0
+    total_expenses = 0.0
+    for amount, transaction_type in rows:
+        normalized_type = transaction_type.lower()
+        if normalized_type == 'income':
+            total_income += abs(amount)
+        elif normalized_type == 'expense':
+            total_expenses += abs(amount)
+
+    spendable_balance = total_income - total_expenses
+
+    print(f"Spendable balance: LKR {spendable_balance:.2f}")
+
+    asset_conn = init_assets_db()
+    asset_cursor = asset_conn.cursor()
+    asset_cursor.execute("SELECT name, asset_type, amount FROM assets ORDER BY created_at")
+    asset_rows = asset_cursor.fetchall()
+    asset_conn.close()
+
+    asset_totals = {}
+    for _, asset_type, amount in asset_rows:
+        asset_totals[asset_type] = asset_totals.get(asset_type, 0.0) + abs(amount)
+
+    print("\nOther assets:")
+    if asset_rows:
+        for asset_type, total in sorted(asset_totals.items()):
+            print(f"- {asset_type}: LKR {total:.2f}")
+    else:
+        print("- None")
+
+    other_assets_total = sum(asset_totals.values())
+    net_asset_value = spendable_balance + other_assets_total
+    print(f"Total other assets: LKR {other_assets_total:.2f}")
+    print(f"Estimated net asset value: LKR {net_asset_value:.2f}")
+
+    while True:
+        add_asset_choice = input("\nWould you like to add a fixed deposit or investment? (y/n): ").strip().lower()
+        if add_asset_choice in {'y', 'yes'}:
+            add_asset_entry()
+            return view_current_financial_status()
+        if add_asset_choice in {'n', 'no'}:
+            return
+        print("Invalid choice. Please enter y or n.")
+
+
 if __name__ == '__main__':
     print("CliFin - Command Line Financial Tracker")
     while True:
         print("\nMain Menu")
         print("1. Enter data")
         print("2. View summary")
-        print("3. Exit")
+        print("3. View current financial status")
+        print("4. Exit")
 
-        choice = input("Choose an option (1, 2, or 3): ").strip()
+        choice = input("Choose an option (1, 2, 3, or 4): ").strip()
 
         if choice == '1':
             data_entry()
         elif choice == '2':
             data_read()
         elif choice == '3':
+            view_current_financial_status()
+        elif choice == '4':
             print("Thank you for using CliFin!")
-            print("Created by Lochana, with help from Copilot.")
             break
         else:
-            print("Invalid choice. Please enter 1, 2, or 3.")
+            print("Invalid choice. Please enter 1, 2, 3, or 4.")
 
