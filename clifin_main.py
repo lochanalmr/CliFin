@@ -8,7 +8,7 @@ ASSETS_DB = 'assets.db'
 
 
 def init_db(db_name=STORAGE_DB):
-    print("Database is being initialized...")
+    print("\nDatabase is being initialized...")
     conn = sql.connect(db_name)
     c = conn.cursor()
     c.execute("""
@@ -24,9 +24,9 @@ def init_db(db_name=STORAGE_DB):
     return conn
 
 
-def init_assets_db():
-    print("Database is being intialized...")
-    conn = sql.connect(ASSETS_DB)
+def init_assets_db(db_name=ASSETS_DB):
+    print("\nDatabase is being intialized...")
+    conn = sql.connect(db_name)
     c = conn.cursor()
     c.execute("""
     CREATE TABLE IF NOT EXISTS assets (
@@ -356,6 +356,69 @@ def add_asset_entry():
     print("Asset added successfully.")
 
 
+def list_assets(db_name=ASSETS_DB):
+    conn = init_assets_db(db_name)
+    c = conn.cursor()
+    c.execute("SELECT id, name, asset_type, amount FROM assets ORDER BY id")
+    rows = c.fetchall()
+    conn.close()
+    return rows
+
+
+def update_asset_value(asset_id=None, new_amount=None, db_name=ASSETS_DB):
+    print("\nUpdate Asset Value")
+    assets = list_assets(db_name)
+
+    if not assets:
+        print("No assets available to update.")
+        return False
+
+    print("Available assets:")
+    print(f"{'ID':<3} | {'Name':<20} | {'Type':<15} | {'Amount':>10}")
+    print("-" * 60)
+    for record_id, name, asset_type, amount in assets:
+        print(f"{record_id:<3} | {name:<20} | {asset_type:<15} | {amount:>10.2f}")
+
+    while True:
+        if asset_id is None:
+            asset_id_input = input("Enter asset ID to update: ").strip()
+            try:
+                asset_id = int(asset_id_input)
+            except ValueError:
+                print("Invalid ID. Please enter a valid number.")
+                continue
+        else:
+            asset_id = int(asset_id)
+
+        if any(existing_id == asset_id for existing_id, _, _, _ in assets):
+            break
+        print("Asset ID not found. Please enter a valid ID.")
+
+    while True:
+        if new_amount is None:
+            amount_input = input("Enter new amount: ").strip()
+            try:
+                new_amount = float(amount_input)
+            except ValueError:
+                print("Invalid amount. Please enter a valid number.")
+                continue
+        else:
+            new_amount = float(new_amount)
+
+        if new_amount <= 0:
+            print("Amount must be greater than 0.")
+            continue
+        break
+
+    conn = init_assets_db(db_name)
+    c = conn.cursor()
+    c.execute("UPDATE assets SET amount = ? WHERE id = ?", (new_amount, asset_id))
+    conn.commit()
+    conn.close()
+    print("Asset value updated successfully.")
+    return True
+
+
 def view_current_financial_status():
     print("\nView Financial Status")
 
@@ -388,7 +451,7 @@ def view_current_financial_status():
     for _, asset_type, amount in asset_rows:
         asset_totals[asset_type] = asset_totals.get(asset_type, 0.0) + abs(amount)
 
-    print("\nOther assets:")
+    print("Other assets:")
     if asset_rows:
         for asset_type, total in sorted(asset_totals.items()):
             print(f"- {asset_type}: LKR {total:.2f}")
@@ -399,37 +462,35 @@ def view_current_financial_status():
     net_asset_value = spendable_balance + other_assets_total
     print(f"Total other assets: LKR {other_assets_total:.2f}")
     print(f"Estimated net asset value: LKR {net_asset_value:.2f}")
-
-    while True:
-        add_asset_choice = input("\nWould you like to add a fixed deposit or investment? (y/n): ").strip().lower()
-        if add_asset_choice in {'y', 'yes'}:
-            add_asset_entry()
-            return view_current_financial_status()
-        if add_asset_choice in {'n', 'no'}:
-            return
-        print("Invalid choice. Please enter y or n.")
+    return
 
 
 if __name__ == '__main__':
-    print("CliFin")
+    print("CliFin v1.1")
     while True:
         print("\nMain Menu")
         print("1. Create New Transaction Record")
-        print("2. View Historical Data")
-        print("3. View Financial Status")
-        print("4. Exit")
+        print("2. Add New Asset")
+        print("3. Update Asset Value")
+        print("4. View Historical Data")
+        print("5. View Financial Status")
+        print("6. Exit")
 
-        choice = input("Choose an option (1, 2, 3, or 4): ").strip()
+        choice = input("Choose an option (1, 2, 3, 4, 5, or 6): ").strip()
 
         if choice == '1':
             data_entry()
         elif choice == '2':
-            data_read()
+            add_asset_entry()
         elif choice == '3':
-            view_current_financial_status()
+            update_asset_value()
         elif choice == '4':
+            data_read()
+        elif choice == '5':
+            view_current_financial_status()
+        elif choice == '6':
             print("Thank you for using CliFin!")
             break
         else:
-            print("Invalid choice. Please enter 1, 2, 3, or 4.")
+            print("Invalid choice. Please enter 1, 2, 3, 4, 5, or 6.")
 
