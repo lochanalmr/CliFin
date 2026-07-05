@@ -1,10 +1,15 @@
 import sqlite3 as sql
 from datetime import datetime
 import csv
+import os
+import json
 
 
 STORAGE_DB = 'storage.db'
 ASSETS_DB = 'assets.db'
+CONFIG_FILE = 'user_config.json'
+
+VERSION = "1.2"
 
 
 def init_db(db_name=STORAGE_DB):
@@ -39,6 +44,47 @@ def init_assets_db(db_name=ASSETS_DB):
     """)
     conn.commit()
     return conn
+
+
+def load_user_name(config_file=CONFIG_FILE):
+    if os.path.exists(config_file):
+        try:
+            with open(config_file, 'r', encoding='utf-8') as f:
+                data = json.load(f)
+            name = data.get('name')
+            if name and isinstance(name, str):
+                return name
+        except Exception:
+            return None
+    return None
+
+
+def save_user_name(name, config_file=CONFIG_FILE):
+    try:
+        with open(config_file, 'w', encoding='utf-8') as f:
+            json.dump({'name': name}, f)
+        return True
+    except Exception:
+        return False
+
+
+def ensure_and_greet_user():
+    existed = os.path.exists(CONFIG_FILE)
+    name = load_user_name()
+    if name and existed:
+        print(f"Hi, {name}! Welcome back!🌞")
+        return
+    if name:
+        print(f"Hi, {name}!")
+        return
+
+    while True:
+        name_input = input("Welcome to CliFin! What's your name? ").strip()
+        if name_input:
+            save_user_name(name_input)
+            print(f"Hi, {name_input}!")
+            break
+        print("Name cannot be empty. Please enter your name, or at least what you like to be called😀")
 
 
 def data_write(amount, category, transaction_type):
@@ -129,7 +175,7 @@ def data_entry():
             categories = {
                 '1': 'Entertainment',
                 '2': 'Food',
-                '3': 'Stationary',
+                '3': 'Asset Purchase',
                 '4': 'Travel',
                 '5': 'Other'
             }
@@ -464,19 +510,41 @@ def view_current_financial_status():
     print(f"Estimated net asset value: LKR {net_asset_value:.2f}")
     return
 
+def help():
+    print(f"\nOption 1: Create New Transaction Record 💵")
+    print("This function lets you enter income or expense transactions")
+    print(f"\nOption 2: Create New Asset Record 💰")
+    print("This function lets you enter details about currently non-spendable assets, like fixed deposits, and any other investment")
+    print(f"\nOption 3: Update Value of Existing Asset 💹")
+    print("This function lets you update the asset values, without manually changing database entries.")
+    print("You can select the ID of the relevant asset, and update the value of it.")
+    print("This will be useful for updating volatile assets.")
+    print(f"\nOption 4: View Historical Data 🕒")
+    print("There are 3 sub options within this function: view summary, view raw data and view both.")
+    print("Using the view summary option, you can view an income and expenses breakdown, for a selected month.")
+    print("Using the view raw data option, you can view a table of all transactions, for a selected month.")
+    print("At the end of view raw data function, you can export the raw data as a .csv file, if preferred.")
+    print("Using the both option, both the summary and raw data will be presented, with the option to export as .csv.")
+    print(f"\nOption 5: View Financial Status 🗽")
+    print("This function will present a concise summary of your current financial status")
+    print("It will include your net asset value, along with the spendable balance and a breakdown of assets")
+    print(f"\nImportant!: Do not delete storage.db or assets.db files created by the program, as they contain all transaction and asset records.")
+
 
 if __name__ == '__main__':
-    print("CliFin v1.1")
+    ensure_and_greet_user()
+    print(f"You are currently running CliFin v{VERSION}")
     while True:
         print("\nMain Menu")
-        print("1. Create New Transaction Record")
-        print("2. Add New Asset")
-        print("3. Update Asset Value")
-        print("4. View Historical Data")
-        print("5. View Financial Status")
-        print("6. Exit")
+        print("1. Create New Transaction Record 💵")
+        print("2. Create New Asset Record 💰")
+        print("3. Update Value of Existing Asset 💹")
+        print("4. View Historical Data 🕒")
+        print("5. View Financial Status 🗽")
+        print("6. Get Me Out of Here! 🚪")
+        print("7. Explain Me! 😣")
 
-        choice = input("Choose an option (1, 2, 3, 4, 5, or 6): ").strip()
+        choice = input("Choose an option (1, 2, 3, 4, 5, 6, or 7): ").strip()
 
         if choice == '1':
             data_entry()
@@ -488,8 +556,11 @@ if __name__ == '__main__':
             data_read()
         elif choice == '5':
             view_current_financial_status()
+        elif choice == '7':
+            help()
         elif choice == '6':
-            print("Thank you for using CliFin!")
+            print("Thank you for using CliFin!😎")
+            choice = input("Press [Enter] to exit.")
             break
         else:
             print("Invalid choice. Please enter 1, 2, 3, 4, 5, or 6.")
