@@ -1,14 +1,12 @@
-from shared import init_assets_db, init_db
+from shared import ASSETS_DB, STORAGE_DB, db_cursor
 
 
 def view_current_financial_status():
     print("\nView Financial Status")
 
-    conn = init_db()
-    c = conn.cursor()
-    c.execute("SELECT amount, type FROM storage")
-    rows = c.fetchall()
-    conn.close()
+    with db_cursor(STORAGE_DB) as c:
+        c.execute("SELECT amount, type FROM storage")
+        rows = c.fetchall()
 
     total_income = 0.0
     total_expenses = 0.0
@@ -23,11 +21,9 @@ def view_current_financial_status():
 
     print(f"Spendable balance: LKR {spendable_balance:.2f}")
 
-    asset_conn = init_assets_db()
-    asset_cursor = asset_conn.cursor()
-    asset_cursor.execute("SELECT name, asset_type, amount FROM assets ORDER BY created_at")
-    asset_rows = asset_cursor.fetchall()
-    asset_conn.close()
+    with db_cursor(ASSETS_DB) as asset_cursor:
+        asset_cursor.execute("SELECT name, asset_type, amount FROM assets ORDER BY created_at")
+        asset_rows = asset_cursor.fetchall()
 
     asset_totals = {}
     for _, asset_type, amount in asset_rows:
