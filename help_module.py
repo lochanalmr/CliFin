@@ -1,19 +1,35 @@
 def help():
     print(f"\nOption 1: Create New Transaction Record 💵")
-    print("This function lets you enter income or expense transactions")
+    print("This option lets you add a new income or expense transaction.")
+    print("You will choose the transaction type, category, and amount before it is saved.")
+
     print(f"\nOption 2: Create New Asset Record 💰")
-    print("This function lets you enter details about currently non-spendable assets, like fixed deposits, and any other investment")
+    print("This option lets you record non-spendable assets such as fixed deposits or investments.")
+    print("You will enter the asset name, type, and amount for storage.")
+
     print(f"\nOption 3: Update Value of Existing Asset 💹")
-    print("This function lets you update the asset values, without manually changing database entries.")
-    print("You can select the ID of the relevant asset, and update the value of it.")
-    print("This will be useful for updating volatile assets.")
-    print(f"\nOption 4: View Historical Data 🕒")
-    print("There are 3 sub options within this function: view summary, view raw data and view both.")
-    print("Using the view summary option, you can view an income and expenses breakdown, for a selected month.")
-    print("Using the view raw data option, you can view a table of all transactions, for a selected month.")
-    print("At the end of view raw data function, you can export the raw data as a .csv file, if preferred.")
-    print("Using the both option, both the summary and raw data will be presented, with the option to export as .csv.")
-    print(f"\nOption 5: View Financial Status 🗽")
-    print("This function will present a concise summary of your current financial status")
-    print("It will include your net asset value, along with the spendable balance and a breakdown of assets")
-    print(f"\nImportant!: Do not delete storage.db or assets.db files created by the program, as they contain all transaction and asset records.")
+    print("This option lets you update an existing asset's value without editing the database manually.")
+    print("You can select the asset by ID and enter a new amount for it.")
+    print("This is especially useful for assets whose values change over time.")
+
+    print(f"\nOption 4: Manage Existing Transactions 📝")
+    print("This option lets you view, edit, or delete transactions that already exist.")
+    print("You can choose to view all transactions or filter them by year, month, or day.")
+    print("After selecting a transaction by ID, you can review its details, delete it, or edit its amount, type, or category.")
+
+    print(f"\nOption 5: View Historical Data 🕒")
+    print("This option shows historical transaction data for a selected month.")
+    print("You can choose between a summary view, raw data view, or both.")
+    print("When raw data is shown, you can also export the results as a CSV file.")
+
+    print(f"\nOption 6: View Financial Status 🗽")
+    print("This option presents a concise summary of your current financial standing.")
+    print("It includes your net asset value, spendable balance, and a breakdown of your assets.")
+
+    print(f"\nOption 7: Explain Me! 😣")
+    print("You are here right now😂")
+
+    print(f"\nOption 8: Get Me Out of Here! 🚪")
+    print("This option exits the program.")
+
+    print(f"\nImportant❗: Do not delete storage.db or assets.db files created by the program, as they contain all transaction and asset records.")
