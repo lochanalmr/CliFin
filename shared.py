@@ -6,7 +6,14 @@ STORAGE_DB = 'storage.db'
 ASSETS_DB = 'assets.db'
 CONFIG_FILE = 'user_config.json'
 
-VERSION = '1.2'
+VERSION = '1.3'
+
+
+def safe_input(prompt):
+    try:
+        return input(prompt)
+    except KeyboardInterrupt:
+        raise SystemExit(0)
 
 
 def init_db(db_name=STORAGE_DB):
