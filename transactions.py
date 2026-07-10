@@ -32,11 +32,11 @@ def _get_transaction_categories(transaction_type):
 
 
 def data_write(amount, category, transaction_type):
-    print("\nConnecting to database...")
+    print("\nConnecting to transactions database...")
     conn = init_db()
     c = conn.cursor()
 
-    print("Database connected...")
+    print("Transactions database connected...")
 
     normalized_type = transaction_type.lower()
     signed_amount = _normalize_transaction_amount(amount, normalized_type)
@@ -50,7 +50,7 @@ def data_write(amount, category, transaction_type):
     )
 
     conn.commit()
-    print("Completed writing to database successfully!")
+    print("Completed writing to transactions database successfully!")
     conn.close()
 
 
