@@ -17,19 +17,33 @@ def help():
     print("You can choose to view all transactions or filter them by year, month, or day.")
     print("After selecting a transaction by ID, you can review its details, delete it, or edit its amount, type, or category.")
 
-    print(f"\nOption 5: View Historical Data 🕒")
+    print(f"\nOption 5: Add Subscription 📅")
+    print("This option lets you create a recurring subscription.")
+    print("You will enter the subscription name, amount, recurrence, start date, and expense category.")
+    print("Subscription dates must be provided in DD-MM-YYYY format.")
+
+    print(f"\nOption 6: Manage Subscriptions ⚙️")
+    print("This option lets you add, update, or discontinue subscriptions.")
+    print("You can review existing subscriptions and change their amount, frequency, start date, or category.")
+    print("Discontinued subscriptions are no longer processed automatically.")
+
+    print(f"\nOption 7: View Historical Data 🕒")
     print("This option shows historical transaction data for a selected month.")
     print("You can choose between a summary view, raw data view, or both.")
     print("When raw data is shown, you can also export the results as a CSV file.")
 
-    print(f"\nOption 6: View Financial Status 🗽")
+    print(f"\nOption 8: View Financial Status 🗽")
     print("This option presents a concise summary of your current financial standing.")
     print("It includes your net asset value, spendable balance, and a breakdown of your assets.")
 
-    print(f"\nOption 7: Explain Me! 😣")
+    print(f"\nOption 9: Explain Me! 😣")
     print("You are here right now😂")
 
-    print(f"\nOption 8: Get Me Out of Here! 🚪")
+    print(f"\nOption 10: Get Me Out of Here! 🚪")
     print("This option exits the program.")
 
-    print(f"\nImportant❗: Do not delete storage.db or assets.db files created by the program, as they contain all transaction and asset records.")
+    print(f"\nSubscription processing📌: When you start the app, due subscriptions are checked automatically.")
+    print("If multiple periods are pending, you will be asked whether to add all pending expenses at once.")
+    print("If a subscription is due earlier than the current month and was added during the same month, you will also be prompted before it is charged.")
+
+    print(f"\nImportant❗: Do not delete storage.db, assets.db, or subscriptions.db files created by the program, as they contain your transaction, asset, and subscription records.")
