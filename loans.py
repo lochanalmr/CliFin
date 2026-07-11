@@ -555,9 +555,10 @@ def manage_loans():
         print('3. Make Loan Payment')
         print('4. Delete Loan')
         print('5. View All Loans')
-        print('6. Back to Main Menu')
+        print('6. View Next Payment Amounts')
+        print('7. Back to Main Menu')
         
-        choice = safe_input('Choose an option (1, 2, 3, 4, 5, or 6): ').strip()
+        choice = safe_input('Choose an option (1, 2, 3, 4, 5, 6, or 7): ').strip()
         
         if choice == '1':
             add_loan()
@@ -571,9 +572,73 @@ def manage_loans():
             rows = _fetch_loans()
             _display_loans(rows)
         elif choice == '6':
+            view_next_loan_payments()
+        elif choice == '7':
             return
         else:
-            print('Invalid choice. Please enter 1, 2, 3, 4, 5, or 6.')
+            print('Invalid choice. Please enter 1, 2, 3, 4, 5, 6, or 7.')
+
+
+
+def view_next_loan_payments():
+    """View upcoming loan payment amounts for all active loans."""
+    print('\n' + '=' * 60)
+    print('Next Loan Payment Amounts')
+    print('=' * 60)
+    
+    rows = _fetch_loans()
+    active_loans = [row for row in rows if row[10] == 'active']  # status is at index 10
+    
+    if not active_loans:
+        print('No active loans found.')
+        return
+
+    today = date.today()
+    
+    headers = ['ID', 'Loan Name', 'Next Payment', 'Due Date', 'Frequency', 'Remaining Balance', 'Payments Left']
+    table_rows = []
+    
+    for record in active_loans:
+        (record_id, name, payment_amount, frequency, term_count,
+         total_loan_value, remaining_balance, first_due_date, next_due_date,
+         last_payment_at, status, created_at) = record
+        
+        # Calculate payments left
+        if payment_amount > 0:
+            payments_left = max(1, int(remaining_balance / payment_amount))
+            if remaining_balance % payment_amount > 0:
+                payments_left += 1
+        else:
+            payments_left = 0
+        
+        # Parse next due date to check if it's overdue
+        try:
+            due_date = datetime.strptime(next_due_date, '%d-%m-%Y').date()
+            due_date_status = next_due_date
+            if due_date < today:
+                due_date_status = f"{next_due_date} (OVERDUE)"
+        except (ValueError, TypeError):
+            due_date_status = next_due_date
+        
+        table_rows.append([
+            record_id,
+            name,
+            format_currency(payment_amount),
+            due_date_status,
+            frequency,
+            format_currency(remaining_balance),
+            payments_left
+        ])
+    
+    print_table(headers, table_rows)
+    
+    # Calculate and display summary
+    total_next_payments = sum(row[2] for row in active_loans)
+    total_remaining = sum(row[6] for row in active_loans)
+    
+    print(f'\nSummary:')
+    print(f'  Total next payments due: {format_currency(total_next_payments)}')
+    print(f'  Total remaining balance across all loans: {format_currency(total_remaining)}')
 
 
 def process_due_loan_payments():
