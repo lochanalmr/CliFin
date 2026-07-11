@@ -24,9 +24,10 @@ LOAN_FREQUENCIES = {
 }
 
 
-def init_loans_db(db_name=LOANS_DB):
+def init_loans_db(db_name=None):
     """Initialize the loans database."""
     import sqlite3 as sql
+    db_name = db_name or LOANS_DB
     conn = sql.connect(db_name)
     conn.execute("""
         CREATE TABLE IF NOT EXISTS loans (
@@ -313,6 +314,60 @@ def update_loan():
         else:
             print('Edit cancelled. You can modify the loan again.')
             continue
+
+
+def apply_loan_payment_to_loan(loan_id, payment_amount, advance_due_date=False):
+    """Apply a payment to a specific loan and update its remaining balance and due date."""
+    rows = _fetch_loans()
+    selected_loan = next((row for row in rows if row[0] == loan_id), None)
+    if not selected_loan:
+        raise ValueError(f'Loan with id {loan_id} was not found.')
+
+    (record_id, name, payment_amount_regular, frequency, term_count,
+     total_loan_value, remaining_balance, first_due_date, next_due_date,
+     last_payment_at, status, created_at) = selected_loan
+
+    if remaining_balance <= 0:
+        return {
+            'loan_id': record_id,
+            'remaining_balance': 0.0,
+            'next_due_date': next_due_date,
+            'status': 'paid',
+        }
+
+    normalized_payment = float(payment_amount)
+    if normalized_payment <= 0:
+        raise ValueError('Payment amount must be greater than 0.')
+
+    new_remaining_balance = max(remaining_balance - normalized_payment, 0.0)
+    new_next_due_date = next_due_date
+    if advance_due_date:
+        try:
+            current_due = datetime.strptime(next_due_date, '%d-%m-%Y').date()
+            new_due = calculate_next_due_date(current_due, frequency)
+            if new_due:
+                new_next_due_date = new_due.strftime('%d-%m-%Y')
+        except (ValueError, TypeError):
+            pass
+
+    created_at_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    conn = init_loans_db()
+    c = conn.cursor()
+    c.execute(
+        """UPDATE loans SET remaining_balance=?, next_due_date=?, last_payment_at=?, 
+           status=?, payment_amount=? WHERE id=?""",
+        (new_remaining_balance, new_next_due_date, created_at_time,
+         'paid' if new_remaining_balance <= 0 else 'active', payment_amount_regular, record_id)
+    )
+    conn.commit()
+    conn.close()
+
+    return {
+        'loan_id': record_id,
+        'remaining_balance': new_remaining_balance,
+        'next_due_date': new_next_due_date,
+        'status': 'paid' if new_remaining_balance <= 0 else 'active',
+    }
 
 
 def make_loan_payment(loan_id=None, payment_amount=None, is_partial=None, carry_over_balance=None):

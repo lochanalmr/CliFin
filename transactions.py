@@ -2,6 +2,7 @@ import csv
 from datetime import datetime
 
 from assets import add_asset
+from loans import apply_loan_payment_to_loan
 
 from shared import (
     EXPENSE_CATEGORIES,
@@ -106,6 +107,35 @@ def data_entry():
         category = categories[category_choice]
 
         amount = get_positive_float("Enter amount: ")
+
+        if transaction_type == 'expense' and category == 'Loan Payments':
+            rows = []
+            try:
+                from loans import _fetch_loans
+                rows = _fetch_loans()
+            except Exception:
+                rows = []
+
+            active_loans = [row for row in rows if row[10] == 'active']
+            if active_loans:
+                print('\nSelect the loan this payment is for:')
+                for loan_row in active_loans:
+                    loan_id, loan_name, payment_amount, frequency, term_count, total_value, remaining_balance, *_ = loan_row
+                    print(f"{loan_id}. {loan_name} | Remaining: LKR {remaining_balance:.2f}")
+                loan_choice = get_choice(
+                    'Enter loan ID: ',
+                    [str(row[0]) for row in active_loans],
+                    'Invalid loan selection. Please enter one of the listed IDs.'
+                )
+                selected_loan_id = int(loan_choice)
+                advance_due_date = get_confirmation(
+                    'Should the next due date be pushed to the next period with the remaining balance? (y/n): ',
+                    input_fn=safe_input
+                )
+                apply_loan_payment_to_loan(selected_loan_id, amount, advance_due_date=advance_due_date)
+                print('Loan balance updated successfully.')
+            else:
+                print('No active loans found to link this payment to.')
 
         data_write(amount, category, transaction_type)
         if transaction_type == 'expense' and category == 'Asset Purchase':
