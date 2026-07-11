@@ -33,7 +33,7 @@ def get_asset_type():
 
 
 def add_asset(amount=None):
-    print("\n" + "=" * 60)
+      
     print("Add Asset")
       
     
@@ -64,7 +64,7 @@ def list_assets(db_name=ASSETS_DB):
 
 
 def update_asset_value(asset_id=None, new_amount=None, db_name=ASSETS_DB):
-    print("\n" + "=" * 60)
+      
     print("Update Asset Value")
       
     

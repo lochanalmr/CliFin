@@ -16,7 +16,7 @@ if __name__ == '__main__':
     process_due_loan_payments()
 
     while True:
-        print("\n" + "=" * 60)
+          
         print("Main Menu")
           
         print("1. Create New Transaction Record ")
@@ -54,7 +54,7 @@ if __name__ == '__main__':
         elif choice == '10':
             manage_loans()
         elif choice == '11':
-            print("\n" + "=" * 60)
+              
             print("Thank you for using CliFin!")
               
             safe_input("Press [Enter] to exit.")

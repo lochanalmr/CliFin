@@ -77,7 +77,7 @@ def data_entry():
                 expense_totals[category] = expense_totals.get(category, 0.0) + display_amount
                 total_expenses += display_amount
 
-        print("\n" + "=" * 60)
+          
         print("Quick Summary")
           
         print(f"You have spent {format_currency(total_expenses)} in {month_name}.")
@@ -176,7 +176,7 @@ def _display_transaction_rows(rows):
 
 def _show_selected_transaction(transaction):
     record_id, amount, category, transaction_type, _ = transaction
-    print("\n" + "=" * 60)
+      
     print("Selected transaction details")
       
     print(f"Transaction ID:        {record_id}")
@@ -208,7 +208,7 @@ def _fetch_transactions(filter_type=None, filter_value=None):
 
 
 def manage_transaction():
-    print("\n" + "=" * 60)
+      
     print("Manage transaction")
       
 
@@ -371,7 +371,7 @@ def export_to_csv(rows, year, month):
 
 
 def data_read():
-    print("\n" + "=" * 60)
+      
     print("View Historical Data")
       
 
