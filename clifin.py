@@ -11,14 +11,14 @@ from loans import manage_loans, process_due_loan_payments
 if __name__ == '__main__':
     ensure_and_greet_user()
     print(f"You are currently running CliFin v{VERSION}")
-    print("=" * 60)
+      
     process_due_subscriptions()
     process_due_loan_payments()
 
     while True:
         print("\n" + "=" * 60)
         print("Main Menu")
-        print("=" * 60)
+          
         print("1. Create New Transaction Record ")
         print("2. Create New Asset Record ")
         print("3. Update Value of Existing Asset ")
@@ -56,7 +56,7 @@ if __name__ == '__main__':
         elif choice == '11':
             print("\n" + "=" * 60)
             print("Thank you for using CliFin!")
-            print("=" * 60)
+              
             safe_input("Press [Enter] to exit.")
             break
         else:

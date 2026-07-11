@@ -79,7 +79,7 @@ def data_entry():
 
         print("\n" + "=" * 60)
         print("Quick Summary")
-        print("=" * 60)
+          
         print(f"You have spent {format_currency(total_expenses)} in {month_name}.")
         if expense_totals:
             top_category, top_amount = max(expense_totals.items(), key=lambda item: item[1])
@@ -178,7 +178,7 @@ def _show_selected_transaction(transaction):
     record_id, amount, category, transaction_type, _ = transaction
     print("\n" + "=" * 60)
     print("Selected transaction details")
-    print("=" * 60)
+      
     print(f"Transaction ID:        {record_id}")
     print(f"Transaction value:    {format_currency(amount)}")
     print(f"Transaction type:     {transaction_type.lower()}")
@@ -210,7 +210,7 @@ def _fetch_transactions(filter_type=None, filter_value=None):
 def manage_transaction():
     print("\n" + "=" * 60)
     print("Manage transaction")
-    print("=" * 60)
+      
 
     view_choice = get_choice(
         "Would you like to (1) view all transactions or (2) filter transactions? ",
@@ -373,7 +373,7 @@ def export_to_csv(rows, year, month):
 def data_read():
     print("\n" + "=" * 60)
     print("View Historical Data")
-    print("=" * 60)
+      
 
     year = get_int_input(
         "Enter year: ",
@@ -431,7 +431,7 @@ def data_read():
 
         print(f"\n{'=' * 60}")
         print(f"Summary for {month_name} {year}")
-        print("=" * 60)
+          
         
         print("\nIncome:")
         if income_totals:
@@ -455,7 +455,7 @@ def data_read():
     if report_choice in {'2', '3'}:
         print(f"\n{'=' * 60}")
         print(f"Raw data for {month_name} {year}")
-        print("=" * 60)
+          
         headers = ['ID', 'Date', 'Type', 'Category', 'Amount']
         table_rows = []
         for record_id, amount, category, transaction_type, created_at in rows:

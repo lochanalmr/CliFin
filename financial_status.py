@@ -4,7 +4,7 @@ from shared import ASSETS_DB, STORAGE_DB, db_cursor, format_currency, format_tab
 def view_current_financial_status():
     print("\n" + "=" * 60)
     print("View Financial Status")
-    print("=" * 60)
+      
 
     with db_cursor(STORAGE_DB) as c:
         c.execute("SELECT amount, type FROM storage")
