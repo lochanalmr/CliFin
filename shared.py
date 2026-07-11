@@ -11,7 +11,7 @@ SUBSCRIPTIONS_DB = 'subscriptions.db'
 LOANS_DB = 'loans.db'
 CONFIG_FILE = 'user_config.json'
 
-VERSION = '1.6'
+VERSION = '1.7'
 
 EXPENSE_CATEGORIES = {
     '1': 'Entertainment',
