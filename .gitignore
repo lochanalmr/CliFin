@@ -4,3 +4,4 @@ __pycache__/
 *.csv
 user_config.json
 /tests
+*.patch
