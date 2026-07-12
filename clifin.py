@@ -6,6 +6,7 @@ from financial_status import view_current_financial_status
 from help_module import help
 from subscriptions import add_subscription, manage_subscriptions, process_due_subscriptions
 from loans import manage_loans, process_due_loan_payments
+from credit_cards import manage_credit_cards, process_due_credit_card_payments
 
 
 if __name__ == '__main__':
@@ -14,24 +15,26 @@ if __name__ == '__main__':
       
     process_due_subscriptions()
     process_due_loan_payments()
+    process_due_credit_card_payments()
 
     while True:
           
         print("Main Menu")
           
-        print("1. Create New Transaction Record ")
-        print("2. Create New Asset Record ")
-        print("3. Update Value of Existing Asset ")
-        print("4. Manage Existing Transactions ")
-        print("5. Add Subscription ")
-        print("6. Manage Subscriptions ")
-        print("7. View Historical Data ")
-        print("8. View Financial Status ")
-        print("9. Explain Me! ")
-        print("10. Loan Management ")
-        print("11. Get Me Out of Here! ")
+        print("1. Create New Transaction Record")
+        print("2. Create New Asset Record")
+        print("3. Update Value of Existing Asset")
+        print("4. Manage Existing Transactions")
+        print("5. Add Subscription")
+        print("6. Manage Subscriptions")
+        print("7. View Historical Data")
+        print("8. View Financial Status")
+        print("9. Explain Me!")
+        print("10. Loan Management")
+        print("11. Credit Card Management")
+        print("12. Get Me Out of Here!")
 
-        choice = safe_input("Choose an option (1, 2, 3, 4, 5, 6, 7, 8, 9, 10, or 11): ").strip()
+        choice = safe_input("Choose an option (1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, or 12): ").strip()
 
         if choice == '1':
             data_entry()
@@ -54,11 +57,12 @@ if __name__ == '__main__':
         elif choice == '10':
             manage_loans()
         elif choice == '11':
+            manage_credit_cards()
+        elif choice == '12':
               
-            print("Thank you for using CliFin!")
+            print("Thank you for using CliFin!")
               
             safe_input("Press [Enter] to exit.")
             break
         else:
-            print("Invalid choice. Please enter 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, or 11.")
-
+            print("Invalid choice. Please enter 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, or 12.")

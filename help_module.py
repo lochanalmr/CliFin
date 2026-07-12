@@ -44,12 +44,19 @@ def help():
     print("When you add a loan, the credited loan amount is recorded as income, and repayment schedules are tracked automatically.")
     print("You can also review active loans, update loan details, and manage repayment status.")
 
-    print(f"\nOption 11: Get Me Out of Here! 🚪")
+    print(f"\nOption 11: Credit Card Management 💳")
+    print("This option lets you add, update, or remove credit card records and track expenses charged to them.")
+    print("You can set up credit cards with billing dates, due dates, credit limits, and interest rates.")
+    print("When an expense is made, you can choose to charge it to a credit card, and payments are tracked with interest calculation for overdue balances.")
+
+    print(f"\nOption 12: Get Me Out of Here! 🚪")
     print("This option exits the program.")
 
-    print(f"\nSubscription and loan processing📌: When you start the app, due subscriptions and due loan payments are checked automatically.")
+    print(f"\nSubscription, loan, and credit card processing📌: When you start the app, due subscriptions, due loan payments, and credit card payments are checked automatically.")
     print("If multiple subscription periods are pending, you will be asked whether to add all pending expenses at once.")
     print("If a loan payment is due, it will be processed and recorded as an expense if you confirm it.")
+    print("If a credit card payment is due, you will be prompted to pay from spendable balance or another credit card.")
     print("If a subscription is due earlier than the current month and was added during the same month, you will also be prompted before it is charged.")
+    print("The day before a credit card payment is due, you will receive a notification at startup.")
 
     print(f"\nImportant❗: Do not delete storage.db, assets.db, subscriptions.db, or loans.db files created by the program, as they contain your stored records.")

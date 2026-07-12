@@ -9,9 +9,11 @@ STORAGE_DB = 'storage.db'
 ASSETS_DB = 'assets.db'
 SUBSCRIPTIONS_DB = 'subscriptions.db'
 LOANS_DB = 'loans.db'
+CREDIT_CARDS_DB = 'credit_cards.db'
+CREDIT_CARD_EXPENSES_DB = 'credit_card_expenses.db'
 CONFIG_FILE = 'user_config.json'
 
-VERSION = '1.8'
+VERSION = '1.9'
 
 EXPENSE_CATEGORIES = {
     '1': 'Entertainment',
@@ -24,6 +26,7 @@ EXPENSE_CATEGORIES = {
     '8': 'Housing',
     '9': 'Loan Payments',
     '10': 'Other',
+    '11': 'Credit Card Payments',
 }
 
 _DATABASE_SCHEMAS = {
@@ -75,6 +78,38 @@ _DATABASE_SCHEMAS = {
             created_at TEXT
         )
     """,
+    CREDIT_CARDS_DB: """
+        CREATE TABLE IF NOT EXISTS credit_cards (
+            id INTEGER PRIMARY KEY,
+            name TEXT,
+            credit_limit REAL,
+            interest_rate REAL,
+            billing_date_day INTEGER,
+            due_date_day INTEGER,
+            billing_date_month INTEGER,
+            due_date_month INTEGER,
+            current_balance REAL DEFAULT 0,
+            statement_balance REAL DEFAULT 0,
+            last_billing_date TEXT,
+            last_payment_date TEXT,
+            status TEXT DEFAULT 'active',
+            created_at TEXT
+        )
+    """,
+    CREDIT_CARD_EXPENSES_DB: """
+        CREATE TABLE IF NOT EXISTS credit_card_expenses (
+            id INTEGER PRIMARY KEY,
+            credit_card_id INTEGER,
+            credit_card_name TEXT,
+            amount REAL,
+            expense_type TEXT,
+            expense_category TEXT,
+            transaction_date TEXT,
+            is_paid INTEGER DEFAULT 0,
+            payment_date TEXT,
+            created_at TEXT
+        )
+    """,
 }
 
 
@@ -116,6 +151,18 @@ def init_loans_db(db_name=None):
     return _initialize_database(db_name, _DATABASE_SCHEMAS[LOANS_DB])
 
 
+def init_credit_cards_db(db_name=None):
+    if db_name is None:
+        db_name = CREDIT_CARDS_DB
+    return _initialize_database(db_name, _DATABASE_SCHEMAS[CREDIT_CARDS_DB])
+
+
+def init_credit_card_expenses_db(db_name=None):
+    if db_name is None:
+        db_name = CREDIT_CARD_EXPENSES_DB
+    return _initialize_database(db_name, _DATABASE_SCHEMAS[CREDIT_CARD_EXPENSES_DB])
+
+
 def load_user_name(config_file=CONFIG_FILE):
     if os.path.exists(config_file):
         try:
@@ -148,6 +195,10 @@ def db_cursor(db_name, commit=False):
         conn = init_subscriptions_db(db_name)
     elif db_name == LOANS_DB:
         conn = init_loans_db(db_name)
+    elif db_name == CREDIT_CARDS_DB:
+        conn = init_credit_cards_db(db_name)
+    elif db_name == CREDIT_CARD_EXPENSES_DB:
+        conn = init_credit_card_expenses_db(db_name)
     else:
         conn = sql.connect(db_name)
 
