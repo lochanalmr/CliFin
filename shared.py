@@ -13,7 +13,7 @@ CREDIT_CARDS_DB = 'credit_cards.db'
 CREDIT_CARD_EXPENSES_DB = 'credit_card_expenses.db'
 CONFIG_FILE = 'user_config.json'
 
-VERSION = '1.9.3'
+VERSION = '1.9.4'
 
 EXPENSE_CATEGORIES = {
     '1': 'Entertainment',
@@ -306,9 +306,7 @@ def get_optional_date(prompt, default, parser, format_str='%d-%m-%Y', err_msg="I
         print(err_msg)
 
 
-# ============================================================================
 # Date Parsing Utilities
-# ============================================================================
 
 def parse_date(value, date_format='%d-%m-%Y'):
     """Parse a date string in DD-MM-YYYY format (or custom format)."""
@@ -336,9 +334,7 @@ def parse_date_ddmmyyyy(value):
         return None
 
 
-# ============================================================================
 # Date Calculation Utilities
-# ============================================================================
 
 def calculate_next_due_date(current_due_date, frequency):
     """Calculate the next due date based on frequency.
@@ -385,9 +381,7 @@ def calculate_next_due_date(current_due_date, frequency):
     return None
 
 
-# ============================================================================
 # Table Formatting Utilities
-# ============================================================================
 
 def format_table(headers, rows, border_char='-', padding=1):
     """Format data as a nicely aligned table.

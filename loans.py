@@ -43,9 +43,7 @@ def _insert_loan_record(name, payment_amount, frequency, term_count, total_loan_
 
 def add_loan():
     """Add a new loan. Total loan value is calculated from payment amount and term."""
-    print('\n' + '=' * 60)
-    print('Add Loan')
-    print('=' * 60)
+    print('\nAdd Loan')
     
     # Get loan name
     while True:
@@ -155,9 +153,7 @@ def _display_loans(rows):
 
 def update_loan():
     """Update loan details (payment amount, term, etc.). Recalculates total loan value."""
-    print('\n' + '=' * 60)
-    print('Update Loan')
-    print('=' * 60)
+    print('\nUpdate Loan')
     
     rows = _fetch_loans()
     if not _display_loans(rows):
@@ -372,9 +368,7 @@ def apply_loan_payment_to_loan(loan_id, payment_amount, advance_due_date=False):
 
 def make_loan_payment(loan_id=None, payment_amount=None, is_partial=None, carry_over_balance=None):
     """Make a loan payment. Records as transaction and updates loan balance."""
-    print('\n' + '=' * 60)
-    print('Make Loan Payment')
-    print('=' * 60)
+    print('\nMake Loan Payment')
     
     rows = _fetch_loans()
     active_loans = [row for row in rows if row[10] == 'active']  # status is at index 10
@@ -497,9 +491,7 @@ def make_loan_payment(loan_id=None, payment_amount=None, is_partial=None, carry_
 
 def delete_loan():
     """Delete a loan record."""
-    print('\n' + '=' * 60)
-    print('Delete Loan')
-    print('=' * 60)
+    print('\nDelete Loan')
     
     rows = _fetch_loans()
     if not _display_loans(rows):
@@ -525,9 +517,7 @@ def delete_loan():
 def manage_loans():
     """Main loan management menu."""
     while True:
-        print('\n' + '=' * 60)
-        print('Loan Management')
-        print('=' * 60)
+        print('\nLoan Management')
         print('1. Add New Loan')
         print('2. Update Loan Details')
         print('3. Make Loan Payment')
@@ -560,9 +550,7 @@ def manage_loans():
 
 def view_next_loan_payments():
     """View upcoming loan payment amounts for all active loans."""
-    print('\n' + '=' * 60)
-    print('Next Loan Payment Amounts')
-    print('=' * 60)
+    print('\nNext Loan Payment Amounts')
     
     rows = _fetch_loans()
     active_loans = [row for row in rows if row[10] == 'active']  # status is at index 10

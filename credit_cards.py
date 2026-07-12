@@ -25,9 +25,7 @@ from shared import (
 
 
 
-# ============================================================================
 # Credit Card CRUD Operations
-# ============================================================================
 
 def _insert_credit_card_record(name, credit_limit, interest_rate, billing_date_day, due_date_day, billing_date_month, due_date_month):
     """Insert a new credit card record into the database."""
@@ -49,9 +47,8 @@ def _insert_credit_card_record(name, credit_limit, interest_rate, billing_date_d
 
 def add_credit_card():
     """Add a new credit card."""
-    print('\n' + '=' * 60)
+       
     print('Add Credit Card')
-    print('=' * 60)
     
     # Get credit card name
     while True:
@@ -146,7 +143,7 @@ def _display_credit_cards(rows):
 
 def update_credit_card():
     """Update credit card details."""
-    print('\n' + '=' * 60)
+       
     print('Update Credit Card')
     print('=' * 60)
     
@@ -273,7 +270,7 @@ def update_credit_card():
 
 def delete_credit_card():
     """Delete a credit card record."""
-    print('\n' + '=' * 60)
+       
     print('Delete Credit Card')
     print('=' * 60)
     
@@ -299,9 +296,7 @@ def delete_credit_card():
         print('Deletion cancelled.')
 
 
-# ============================================================================
 # Credit Card Expense Operations
-# ============================================================================
 
 def _insert_credit_card_expense(credit_card_id, credit_card_name, amount, expense_type, expense_category):
     """Insert a new credit card expense record."""
@@ -379,7 +374,7 @@ def mark_credit_card_expense_as_paid(expense_id):
 
 def view_credit_card_expenses():
     """View credit card expenses with filtering options."""
-    print('\n' + '=' * 60)
+       
     print('View Credit Card Expenses')
     print('=' * 60)
     
@@ -421,9 +416,7 @@ def view_credit_card_expenses():
         print('Expense marked as paid successfully.')
 
 
-# ============================================================================
 # Credit Card Payment Processing
-# ============================================================================
 
 def calculate_daily_interest_rate(annual_rate):
     """Calculate daily interest rate from annual rate."""
@@ -702,7 +695,7 @@ def pay_from_another_credit_card(source_card, amount):
 
 def make_credit_card_payment():
     """Manually make a credit card payment."""
-    print('\n' + '=' * 60)
+       
     print('Make Credit Card Payment')
     print('=' * 60)
     
@@ -792,9 +785,7 @@ def make_credit_card_payment():
     print('Payment recorded successfully.')
 
 
-# ============================================================================
 # Credit Card Expense Integration
-# ============================================================================
 
 def prompt_for_credit_card_expense(amount, expense_type, expense_category):
     """Prompt user to use a credit card for an expense."""
@@ -865,15 +856,12 @@ def prompt_for_credit_card_expense(amount, expense_type, expense_category):
     return True, card_id
 
 
-# ============================================================================
 # View Next Payment Amounts
-# ============================================================================
 
 def view_next_credit_card_payments():
     """View upcoming credit card payment amounts."""
-    print('\n' + '=' * 60)
+       
     print('Next Credit Card Payment Amounts')
-    print('=' * 60)
     
     cards = _fetch_credit_cards()
     active_cards = [card for card in cards if card[12] == 'active']
@@ -936,14 +924,12 @@ def view_next_credit_card_payments():
     print(f'  Total estimated minimum payments: {format_currency(total_min_payment)}')
 
 
-# ============================================================================
 # Main Management Menu
-# ============================================================================
 
 def manage_credit_cards():
     """Main credit card management menu."""
     while True:
-        print('\n' + '=' * 60)
+           
         print('Credit Card Management')
         print('=' * 60)
         print('1. Add New Credit Card')

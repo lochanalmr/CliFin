@@ -43,7 +43,7 @@ def _insert_subscription_record(name, amount, frequency, start_date, category, s
 
 
 def add_subscription():
-    print('\n' + '=' * 60)
+       
     print('Add Subscription')
     print('=' * 60)
     
@@ -129,7 +129,7 @@ def _display_subscriptions(rows):
 
 
 def update_subscription():
-    print('\n' + '=' * 60)
+       
     print('Update Subscription')
     print('=' * 60)
     
@@ -207,7 +207,7 @@ def update_subscription():
 
 
 def discontinue_subscription():
-    print('\n' + '=' * 60)
+       
     print('Discontinue Subscription')
     print('=' * 60)
     
@@ -234,7 +234,7 @@ def discontinue_subscription():
 
 def manage_subscriptions():
     while True:
-        print('\n' + '=' * 60)
+           
         print('Manage Subscriptions')
         print('=' * 60)
         print('1. Add New Subscription')
