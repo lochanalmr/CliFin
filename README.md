@@ -12,6 +12,7 @@ Clifin is a simple command line tool for tracking finances. All databases are cr
 - Updating transaction details (type, category, value)
 - Managing subscriptions (add, update, remove, and auto debit as expense at application startup)
 - Managing loans (add, update, remove, and auto debit as expense at application startup)
+- Managing credit cards (able to mark expenses to be paid from credit card, show payable amount on credit card payment date etc.)
 
 ## Technology stack
 - Python 3.14
