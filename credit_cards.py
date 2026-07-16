@@ -22,17 +22,11 @@ from shared import (
 )
 
 
-
-
-
 # Credit Card CRUD Operations
 
 def _insert_credit_card_record(name, credit_limit, interest_rate, billing_date_day, due_date_day, billing_date_month, due_date_month):
     """Insert a new credit card record into the database."""
-    
     created_at = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-    
-    # Calculate current date for last billing/due dates
     today = date.today()
     
     with db_cursor(CREDIT_CARDS_DB, commit=True) as c:
@@ -47,22 +41,21 @@ def _insert_credit_card_record(name, credit_limit, interest_rate, billing_date_d
 
 def add_credit_card():
     """Add a new credit card."""
-       
     print('Add Credit Card')
-    
+
     # Get credit card name
     while True:
         name = safe_input('Enter credit card name/description: ').strip()
         if name:
             break
         print('Credit card name cannot be empty.')
-    
+
     # Get credit limit
     credit_limit = get_positive_float('Enter credit limit: ')
-    
+
     # Get interest rate (APR as percentage)
     interest_rate = get_positive_float('Enter annual interest rate (APR) as percentage (e.g., 18 for 18%): ')
-    
+
     # Get billing date (day of month)
     billing_date_day = get_int_input(
         'Enter billing date (day of month, 1-31): ',
@@ -70,15 +63,15 @@ def add_credit_card():
         lambda d: 1 <= d <= 31,
         'Day must be between 1 and 31.'
     )
-    
-    # Get billing date (month - can be different from due date month)
+
+    # Get billing date month
     billing_date_month = get_int_input(
         'Enter billing date month (1-12): ',
         'Invalid month. Please enter a valid number.',
         lambda m: 1 <= m <= 12,
         'Month must be between 1 and 12.'
     )
-    
+
     # Get due date (day of month)
     due_date_day = get_int_input(
         'Enter due date (day of month, 1-31): ',
@@ -86,22 +79,21 @@ def add_credit_card():
         lambda d: 1 <= d <= 31,
         'Day must be between 1 and 31.'
     )
-    
-    # Get due date (month - can be different from billing date month)
+
+    # Get due date month
     due_date_month = get_int_input(
         'Enter due date month (1-12): ',
         'Invalid month. Please enter a valid number.',
         lambda m: 1 <= m <= 12,
         'Month must be between 1 and 12.'
     )
-    
+
     _insert_credit_card_record(name, credit_limit, interest_rate, billing_date_day, due_date_day, billing_date_month, due_date_month)
     print('\nCredit card added successfully.')
 
 
 def _fetch_credit_cards():
     """Fetch all credit cards from the database."""
-    
     with db_cursor(CREDIT_CARDS_DB) as c:
         c.execute(
             "SELECT id, name, credit_limit, interest_rate, billing_date_day, due_date_day, billing_date_month, due_date_month, current_balance, statement_balance, last_billing_date, last_payment_date, status, created_at FROM credit_cards ORDER BY id"
